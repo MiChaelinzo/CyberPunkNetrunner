@@ -1,13 +1,19 @@
 ### 𝘈𝘭𝘭 𝘪𝘯 𝘖𝘯𝘦 𝘏𝘢𝘤𝘬𝘪𝘯𝘨 𝘵𝘰𝘰𝘭 𝘍𝘰𝘳 𝘏𝘢𝘤𝘬𝘦𝘳𝘴
 
 ![](https://img.shields.io/github/issues/MiChaelinzo/CyberPunkNetrunner)
+
 ![](https://img.shields.io/github/forks/MiChaelinzo/CyberPunkNetrunner)
+
 ![](https://img.shields.io/github/stars/MiChaelinzo/CyberPunkNetrunner)
+
 ![](https://img.shields.io/github/license/MiChaelinzo/CyberPunkNetrunner)
+
 ![](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FMiChaelinzo%2FCyberPunkNetrunner)
 
 ![](https://img.shields.io/badge/Python-3-blue)
+
 ![](https://img.shields.io/badge/platform-Linux%20%7C%20KaliLinux%20%7C%20ParrotOs-blue)
+
 ![](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2F_Zinzu07)
 
 
@@ -22,9 +28,13 @@
 𝘗𝘭𝘦𝘢𝘴𝘦 𝘰𝘱𝘦𝘯 𝘢𝘯 𝘪𝘴𝘴𝘶𝘦 𝘴𝘰 𝘪'𝘭𝘭 𝘧𝘪𝘹 𝘵𝘩𝘦𝘮..!!
 
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG.png)
+
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG4.png)
+
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG1.png)
+
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG2.png)
+
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG3.png)
 
 # 𝘕𝘦𝘵𝘳𝘶𝘯𝘯𝘦𝘳 𝘔𝘦𝘯𝘶
@@ -171,9 +181,13 @@
 - 𝘏𝘢𝘴𝘩 𝘉𝘶𝘴𝘵𝘦𝘳
 
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images /IMG.png)
+
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images /IMG4.png)
+
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images /IMG1.png)
+
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images /IMG2.png)
+
 ![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images /IMG3.png)
 
 ## 𝘐𝘯𝘴𝘵𝘢𝘭𝘭𝘢𝘵𝘪𝘰𝘯 𝘪𝘯 𝘓𝘪𝘯𝘶𝘹 :
