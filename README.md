@@ -180,24 +180,24 @@
 
 #### 𝘛𝘩𝘪𝘴 𝘛𝘰𝘰𝘭 𝘔𝘶𝘴𝘵 𝘙𝘶𝘯 𝘈𝘴 𝘙𝘖𝘖𝘛 !!!
 
-   # clone the repo
+   #### clone the repo
    $ 𝘨𝘪𝘵 𝘤𝘭𝘰𝘯𝘦 𝘩𝘵𝘵𝘱𝘴://𝘨𝘪𝘵𝘩𝘶𝘣.𝘤𝘰𝘮/𝘔𝘪𝘊𝘩𝘢𝘦𝘭𝘪𝘯𝘻𝘰/𝘊𝘺𝘣𝘦𝘳𝘗𝘶𝘯𝘬𝘕𝘦𝘵𝘳𝘶𝘯𝘯𝘦𝘳.𝘨𝘪𝘵
     
-   # changing permission access
+   #### changing permission access
    $ chmod -R 755 CyberPunkNetrunner
 
-   # change the working directory to sherlock
+   #### change the working directory to sherlock
    $ 𝘤𝘥 CyberPunk𝘕𝘦𝘵𝘳𝘶𝘯𝘯𝘦𝘳
     
-   # install python3 and python3-pip if they are not installed
+   #### install python3 and python3-pip if they are not installed
 
-   # install the requirements
+   #### install the requirements
    $ python3 -m pip install -r requirements.txt
 
-   # install the CyberPunkNetrunner 
+   #### install the CyberPunkNetrunner 
    $python3 Netrunner.py
 
-   #Run CyberPunkNetrunner
+   ####Run CyberPunkNetrunner
    $python3 Netrunner.py
    
     
