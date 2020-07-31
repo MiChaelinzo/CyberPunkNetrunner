@@ -20,11 +20,11 @@
 𝘛𝘩𝘪𝘴 𝘱𝘳𝘰𝘫𝘦𝘤𝘵 𝘴𝘵𝘪𝘭𝘭 𝘪𝘯 𝘉𝘌𝘛𝘈 𝘴𝘰 𝘺𝘰𝘶 𝘮𝘢𝘺 𝘧𝘢𝘤𝘦 𝘱𝘳𝘰𝘣𝘭𝘦𝘮𝘴,
 𝘗𝘭𝘦𝘢𝘴𝘦 𝘰𝘱𝘦𝘯 𝘢𝘯 𝘪𝘴𝘴𝘶𝘦 𝘴𝘰 𝘪'𝘭𝘭 𝘧𝘪𝘹 𝘵𝘩𝘦𝘮..!!
 
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG.png)
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG4.png)
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG1.png)
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG2.png)
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG3.png)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG.PNG)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG4.PNG)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG1.PNG)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG2.PNG)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG3.PNG)
 
 # 𝘕𝘦𝘵𝘳𝘶𝘯𝘯𝘦𝘳 𝘔𝘦𝘯𝘶
 - 𝘈𝘯𝘰𝘯𝘚𝘶𝘳𝘧                  
@@ -169,15 +169,15 @@
 ### 𝘏𝘢𝘴𝘩 𝘊𝘳𝘢𝘤𝘬𝘪𝘯𝘨 𝘛𝘰𝘰𝘭
 - 𝘏𝘢𝘴𝘩 𝘉𝘶𝘴𝘵𝘦𝘳
 
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG.png)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG.PNG)
 
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG4.png)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG4.PNG)
 
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG1.png)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG1.PNG)
 
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG2.png)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG2.PNG)
 
-![](https://github.com/MiChaelinzo/CyberPunkNetrunner/images/IMG3.png)
+![](https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/images/IMG3.PNG)
 
 ## 𝘐𝘯𝘴𝘵𝘢𝘭𝘭𝘢𝘵𝘪𝘰𝘯 𝘪𝘯 𝘓𝘪𝘯𝘶𝘹 :
 
@@ -200,7 +200,7 @@
    #### install the CyberPunkNetrunner 
    $python3 Netrunner.py
 
-   ####Run CyberPunkNetrunner
+   #### Run CyberPunkNetrunner
    $python3 Netrunner.py
    
     
