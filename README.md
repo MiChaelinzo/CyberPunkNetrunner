@@ -7,7 +7,6 @@
 ![](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FMiChaelinzo%2FCyberPunkNetrunner)
 ![](https://img.shields.io/badge/Python-3-blue)
 ![](https://img.shields.io/badge/platform-Linux%20%7C%20KaliLinux%20%7C%20ParrotOs-blue)
-![](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2F_Zinzu07)
 
 
 ## 𝘜𝘱𝘥𝘢𝘵𝘦 𝘈𝘷𝘢𝘪𝘭𝘢𝘣𝘭𝘦 🚀 
@@ -217,11 +216,11 @@
 ## 𝘍𝘰𝘭𝘭𝘰𝘸 ➤ [𝘎𝘪𝘵𝘏𝘶𝘣](https://github.com/Michaelinzo) [𝘛𝘸𝘪𝘵𝘵𝘦𝘳](https://twitter.com/Michaelinzo) [𝘐𝘯𝘴𝘵𝘢𝘨𝘳𝘢𝘮](https://instagram.com/llmichaelinzoll21/) [𝘐𝘯𝘷𝘦𝘴𝘵𝘪𝘯𝘨 𝘐𝘯𝘴𝘵𝘢𝘨𝘳𝘢𝘮](https://instagram.com/fxcryptomaster)
 
 
-## 𝘊𝘩𝘦𝘤𝘬𝘰𝘶𝘵 ➤ [𝘓𝘪𝘯𝘬𝘵𝘳𝘦𝘦](𝘩𝘵𝘵𝘱𝘴://𝘭𝘪𝘯𝘬𝘵𝘳.𝘦𝘦/𝘔𝘪𝘊𝘩𝘢𝘦𝘭𝘪𝘯𝘻𝘰)
+## 𝘊𝘩𝘦𝘤𝘬𝘰𝘶𝘵 ➤ [Website](https://beacons.ai/michaelinzo)
 
 
 
-#### 𝘊𝘰𝘯𝘵𝘢𝘤𝘵 𝘝𝘪𝘢 𝘛𝘸𝘪𝘵𝘵𝘦𝘳 𝘰𝘳 𝘌𝘮𝘢𝘪𝘭
+#### 𝘊𝘰𝘯𝘵𝘢𝘤𝘵 𝘝𝘪𝘢 𝘛𝘸𝘪𝘵𝘵𝘦𝘳 or Instagram 𝘰𝘳 𝘌𝘮𝘢𝘪𝘭
 
 𝘍𝘦𝘦𝘭 𝘧𝘳𝘦𝘦 𝘵𝘰 𝘮𝘢𝘬𝘦 𝘢 𝘱𝘶𝘭𝘭 𝘳𝘦𝘲𝘶𝘦𝘴𝘵 𝘪𝘧 𝘺𝘰𝘶 𝘧𝘦𝘦𝘭 𝘵𝘩𝘢𝘵 𝘺𝘰𝘶 𝘩𝘢𝘷𝘦 𝘪𝘮𝘱𝘳𝘰𝘷𝘦 𝘵𝘩𝘪𝘴 𝘵𝘰𝘰𝘭 
 
