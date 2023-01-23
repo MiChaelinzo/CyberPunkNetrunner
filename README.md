@@ -188,11 +188,10 @@
    #### changing permission access
    $ chmod -R 755 CyberPunkNetrunner
 
-   #### change the working directory to sherlock
+   #### change the working directory
    $ 𝘤𝘥 CyberPunk𝘕𝘦𝘵𝘳𝘶𝘯𝘯𝘦𝘳
     
    #### install python3 and python3-pip if they are not installed
-
    #### install the requirements
    $ python3 -m pip install -r requirements.txt
 
@@ -216,7 +215,7 @@
 ## 𝘍𝘰𝘭𝘭𝘰𝘸 ➤ [𝘎𝘪𝘵𝘏𝘶𝘣](https://github.com/Michaelinzo) [𝘛𝘸𝘪𝘵𝘵𝘦𝘳](https://twitter.com/Michaelinzo) [𝘐𝘯𝘴𝘵𝘢𝘨𝘳𝘢𝘮](https://instagram.com/llmichaelinzoll21/) [𝘐𝘯𝘷𝘦𝘴𝘵𝘪𝘯𝘨 𝘐𝘯𝘴𝘵𝘢𝘨𝘳𝘢𝘮](https://instagram.com/fxcryptomaster)
 
 
-## 𝘊𝘩𝘦𝘤𝘬𝘰𝘶𝘵 ➤ [Website](https://beacons.ai/michaelinzo)
+## 𝘊𝘩𝘦𝘤𝘬𝘰𝘶𝘵 ➤ [Website](https://beacons.ai/cyberworld)
 
 
 
