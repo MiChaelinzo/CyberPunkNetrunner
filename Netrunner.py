@@ -9,7 +9,7 @@ import requests
 from getpass import getpass
 from os import path
 from platform import system
-Logo="""\033[33
+Logo="""\033[33m
 
   
 ░█████╗░██╗░░░██╗██████╗░███████╗██████╗░██████╗░██╗░░░██╗███╗░░██╗██╗░░██╗  ██████╗░░█████╗░███████╗███████╗
