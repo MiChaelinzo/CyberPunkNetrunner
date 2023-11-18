@@ -2147,6 +2147,8 @@ def Ddos():
         [2]𝘢𝘚𝘠𝘕𝘤𝘳𝘰𝘯𝘦 | 𝘔𝘶𝘭𝘵𝘪𝘧𝘶𝘯𝘤𝘵𝘪𝘰𝘯 𝘚𝘠𝘕 𝘍𝘭𝘰𝘰𝘥 𝘋𝘋𝘰𝘚 𝘞𝘦𝘢𝘱𝘰𝘯 
         [3]𝘜𝘍𝘖𝘯𝘦𝘵
         [4]𝘎𝘰𝘭𝘥𝘦𝘯𝘌𝘺𝘦
+        [5]CC-Attack
+        [6]DDoS-Ripper
         [99]𝘉𝘢𝘤𝘬
     """)
     choice =input("几乇ㄒ尺ㄩ几几乇尺  >> ")
@@ -2162,6 +2164,12 @@ def Ddos():
     elif choice == "4":
         clearScr()
         goldeneye()
+    elif choice == "5":
+        clearScr()
+        ccattack()
+    elif choice == "6":
+        clearScr
+        ddosripper()
     elif choice == "99":
         menu()
     else :
@@ -2225,8 +2233,35 @@ def goldeneye():
     elif choice == "99":
         Ddos()
     else :
+        menu() 
+      
+def ccattack():
+    os.system("echo \"CC-attack Using Socks4/5 or http proxies to make a multithreading Http-flood/Https-flood (cc) attack. \n\t [!]https://github.com/Leeon123/CC-attack \"|boxes -d boy | lolcat")
+    choice = input("[1]install [2]Run [99]Back >> ")
+    if choice == "1":
+        os.system("sudo git clone https://github.com/Leeon123/CC-attack.git")
+        Ddos()
+    elif choice == "2":
+        os.system("cd CC-attack ;sudo ./cc.py")
+        print("\033[96m Go to Directory \n [*] USAGE: ./cc.py <url> [OPTIONS] ")
+    elif choice == "99":
+        Ddos()
+    else :
         menu()
 
+def ddosripper():
+    os.system("echo \"DDos Ripper a Distributable Denied-of-Service (DDOS) attack server that cuts off targets or surrounding infrastructure in a flood of Internet traffic. \n\t [!]https://github.com/palahsu/DDoS-Ripper \"|boxes -d boy | lolcat")
+    choice = input("[1]install [2]Run [99]Back >> ")
+    if choice == "1":
+        os.system("sudo git clone https://github.com/palahsu/DDoS-Ripper.git")
+        Ddos()
+    elif choice == "2":
+        os.system("cd DDoS-Ripper ;sudo ./DRipper.py")
+        print("\033[96m Go to Directory \n [*] USAGE: ./DRipper.py <url> [OPTIONS] ")
+    elif choice == "99":
+        Ddos()
+    else :
+        menu()
 
 def xsstools():
     clearScr()
