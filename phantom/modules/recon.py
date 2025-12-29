@@ -176,7 +176,7 @@ class SubdomainFinder(BaseScanner):
         )
 
 
-class TechFingerpint(BaseScanner):
+class TechFingerprint(BaseScanner):
     """Web technology fingerprinting"""
     
     TECH_SIGNATURES = {
@@ -304,7 +304,7 @@ class ReconnaissanceModule:
         self.port_scanner = PortScanner()
         self.dns_enum = DNSEnumerator()
         self.subdomain_finder = SubdomainFinder()
-        self.tech_fingerprint = TechFingerpint()
+        self.tech_fingerprint = TechFingerprint()
         self.osint = OSINTGatherer()
         self.results: List[ReconResult] = []
     
