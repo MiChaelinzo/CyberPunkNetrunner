@@ -1,0 +1,86 @@
+# PHANTOM Netrunner v3.0 Configuration
+# =====================================
+# This configuration file controls the behavior of the PHANTOM framework.
+
+# Core Settings
+version: "3.0.0"
+codename: "PHANTOM"
+
+# Operations Directory
+# All tools and data will be stored in this directory
+operations_dir: "~/phantom_ops"
+
+# Logging Settings
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "~/.phantom/logs/phantom.log"
+  max_size: 10485760  # 10MB
+  backup_count: 5
+
+# Network Settings
+network:
+  proxy_enabled: false
+  proxy_host: ""
+  proxy_port: 8080
+  proxy_type: "http"  # http, socks4, socks5
+  timeout: 30
+  max_retries: 3
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+
+# Security Settings
+security:
+  anonymity_mode: false
+  tor_enabled: false
+  tor_port: 9050
+  vpn_check: true
+  dns_leak_protection: true
+  mac_spoofing: false
+
+# Display Settings
+display:
+  color_enabled: true
+  banner_enabled: true
+  verbose_output: true
+  animation_enabled: true
+  theme: "cyberpunk"  # cyberpunk, minimal, classic
+
+# Module Settings
+modules:
+  reconnaissance:
+    thread_count: 50
+    timeout: 5
+    
+  network:
+    interface: "eth0"
+    scan_timeout: 30
+    
+  web:
+    threads: 10
+    timeout: 10
+    follow_redirects: true
+    
+  wireless:
+    interface: "wlan0"
+    scan_duration: 30
+    
+  exploit:
+    listener_port: 4444
+    payload_dir: "~/.phantom/payloads"
+
+# API Keys (Optional)
+# Add your API keys here for enhanced functionality
+api_keys:
+  shodan: ""
+  virustotal: ""
+  hunter: ""
+  haveibeenpwned: ""
+
+# Custom Scripts
+# Add paths to custom scripts here
+custom_scripts: []
+
+# Plugin Settings
+plugins:
+  enabled: true
+  plugin_dir: "~/.phantom/plugins"
+  auto_load: true
