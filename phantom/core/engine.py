@@ -1,10 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-PHANTOM Engine - Core Framework Controller
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  PHANTOM NETRUNNER ENGINE - CYBERDECK CORE v3.0                              ║
+║  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━║
+║  "In the Net, no one hears you breach the ICE." - Night City Netrunner       ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
 This module serves as the central orchestrator for all PHANTOM operations,
-managing module lifecycle, session handling, and system coordination.
+managing quickhack deployment, cyberdeck protocols, and ICE-breaching routines.
+
+Terminology (Cyberpunk 2077):
+- ICE (Intrusion Countermeasures Electronics): Security programs
+- Daemon: Automated background processes/exploits
+- Quickhack: Rapid offensive/defensive cyber attacks
+- Cyberdeck: Hardware interface for netrunning
+- Subnet: Local network segment
+- NetWatch: Corporate net security (the enemy)
+- Blackwall: The ultimate barrier (AI containment)
 """
 
 import sys
@@ -35,17 +48,17 @@ except ImportError:
 
 
 class OperationMode(Enum):
-    """PHANTOM Operation Modes"""
-    STEALTH = auto()      # Minimal footprint operations
-    AGGRESSIVE = auto()   # Full capability deployment
-    RECON = auto()        # Information gathering only
-    AUDIT = auto()        # Compliance and security audit
-    INTERACTIVE = auto()  # User-guided operations
+    """PHANTOM Operation Modes - Cyberdeck Configuration"""
+    STEALTH = auto()      # Ghost Protocol - Minimal ICE detection
+    AGGRESSIVE = auto()   # Berserker Mode - Full daemon deployment
+    RECON = auto()        # Ping Protocol - Intelligence gathering
+    AUDIT = auto()        # NetWatch Scan - Corporate compliance
+    INTERACTIVE = auto()  # Live Jack-In - User-guided operations
 
 
 @dataclass
 class SystemState:
-    """Tracks the current state of the PHANTOM system"""
+    """Tracks the current state of the Cyberdeck system"""
     initialized: bool = False
     session_active: bool = False
     current_module: Optional[str] = None
@@ -53,158 +66,178 @@ class SystemState:
     start_time: datetime = field(default_factory=datetime.now)
     loaded_plugins: List[str] = field(default_factory=list)
     active_tasks: Dict[str, Any] = field(default_factory=dict)
+    ram_units: int = 8  # Cyberdeck RAM for quickhacks
+    ice_breached: int = 0  # ICE layers compromised
 
 
 class PhantomEngine:
     """
-    Core Engine for PHANTOM Netrunner Framework
+    Core Cyberdeck Engine for PHANTOM Netrunner Framework
     
-    Manages all system operations, module loading, and user interactions
-    through a modern, secure architecture.
+    "The Net is vast and infinite." - Ghost in the Shell
+    
+    Manages all netrunning operations, quickhack deployment, daemon control,
+    and ICE-breaching routines through a military-grade cyberdeck interface.
+    
+    Inspired by Cyberpunk 2077's Netrunning mechanics.
     """
     
     VERSION = "3.0.0"
     CODENAME = "PHANTOM"
+    CYBERDECK = "Netwatch Netdriver Mk.5"
     
-    # ASCII Art Banner
+    # ASCII Art Banner - Cyberpunk 2077 Style
     BANNER = """
-\033[95m╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+\033[38;5;201m╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║\033[38;5;51m  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄  \033[38;5;201m║
+║\033[38;5;51m  █▓▒░ P H A N T O M   N E T R U N N E R ░▒▓█   ◢◤ CYBERDECK ONLINE ◢◤                            \033[38;5;201m║
+║\033[38;5;51m  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀  \033[38;5;201m║
 ║                                                                                                          ║
-║   ██████╗ ██╗  ██╗ █████╗ ███╗   ██╗████████╗ ██████╗ ███╗   ███╗    ██╗   ██╗██████╗     ██████╗       ║
-║   ██╔══██╗██║  ██║██╔══██╗████╗  ██║╚══██╔══╝██╔═══██╗████╗ ████║    ██║   ██║╚════██╗   ██╔═████╗      ║
-║   ██████╔╝███████║███████║██╔██╗ ██║   ██║   ██║   ██║██╔████╔██║    ██║   ██║ █████╔╝   ██║██╔██║      ║
-║   ██╔═══╝ ██╔══██║██╔══██║██║╚██╗██║   ██║   ██║   ██║██║╚██╔╝██║    ╚██╗ ██╔╝ ╚═══██╗   ████╔╝██║      ║
-║   ██║     ██║  ██║██║  ██║██║ ╚████║   ██║   ╚██████╔╝██║ ╚═╝ ██║     ╚████╔╝ ██████╔╝██╗╚██████╔╝      ║
-║   ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝      ╚═══╝  ╚═════╝ ╚═╝ ╚═════╝       ║
+║   \033[38;5;201m██████╗ \033[38;5;198m██╗  ██╗ \033[38;5;51m█████╗ \033[38;5;47m███╗   ██╗\033[38;5;226m████████╗\033[38;5;201m ██████╗ \033[38;5;198m███╗   ███╗\033[0m                                  \033[38;5;201m║
+║   \033[38;5;201m██╔══██╗\033[38;5;198m██║  ██║\033[38;5;51m██╔══██╗\033[38;5;47m████╗  ██║\033[38;5;226m╚══██╔══╝\033[38;5;201m██╔═══██╗\033[38;5;198m████╗ ████║\033[0m    \033[38;5;51mN E T R U N N E R\033[0m       \033[38;5;201m║
+║   \033[38;5;201m██████╔╝\033[38;5;198m███████║\033[38;5;51m███████║\033[38;5;47m██╔██╗ ██║\033[38;5;226m   ██║   \033[38;5;201m██║   ██║\033[38;5;198m██╔████╔██║\033[0m    \033[38;5;198mv3.0 // NIGHT CITY\033[0m    \033[38;5;201m║
+║   \033[38;5;201m██╔═══╝ \033[38;5;198m██╔══██║\033[38;5;51m██╔══██║\033[38;5;47m██║╚██╗██║\033[38;5;226m   ██║   \033[38;5;201m██║   ██║\033[38;5;198m██║╚██╔╝██║\033[0m                           \033[38;5;201m║
+║   \033[38;5;201m██║     \033[38;5;198m██║  ██║\033[38;5;51m██║  ██║\033[38;5;47m██║ ╚████║\033[38;5;226m   ██║   \033[38;5;201m╚██████╔╝\033[38;5;198m██║ ╚═╝ ██║\033[0m                           \033[38;5;201m║
+║   \033[38;5;201m╚═╝     \033[38;5;198m╚═╝  ╚═╝\033[38;5;51m╚═╝  ╚═╝\033[38;5;47m╚═╝  ╚═══╝\033[38;5;226m   ╚═╝   \033[38;5;201m ╚═════╝ \033[38;5;198m╚═╝     ╚═╝\033[0m                           \033[38;5;201m║
 ║                                                                                                          ║
-║   \033[96m⚡ NEXT-GENERATION CYBERSECURITY OPERATIONS FRAMEWORK ⚡\033[95m                                            ║
-║   \033[93m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[95m   ║
+║   \033[38;5;226m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[38;5;201m   ║
+║   \033[38;5;51m◢ \033[38;5;226mCYBERDECK STATUS\033[38;5;51m ◤\033[0m              \033[38;5;51m◢ \033[38;5;226mQUICKHACKS LOADED\033[38;5;51m ◤\033[0m              \033[38;5;51m◢ \033[38;5;226mICE STATUS\033[38;5;51m ◤\033[0m         \033[38;5;201m║
+║   \033[38;5;47m[■] RAM: 8 UNITS AVAILABLE\033[0m        \033[38;5;47m[■] BREACH PROTOCOL v3.0\033[0m           \033[38;5;47m[■] STANDBY\033[0m            \033[38;5;201m║
+║   \033[38;5;47m[■] BUFFER: 6 SLOTS\033[0m               \033[38;5;47m[■] DAEMON UPLOAD READY\033[0m            \033[38;5;47m[■] NO TRACE\033[0m           \033[38;5;201m║
+║   \033[38;5;47m[■] NEURAL LINK: STABLE\033[0m           \033[38;5;47m[■] PING NETWORK ACTIVE\033[0m            \033[38;5;47m[■] GHOST MODE\033[0m         \033[38;5;201m║
 ║                                                                                                          ║
-║   \033[92m[■] Neural Network Powered Analysis      [■] Zero-Day Defense Systems\033[95m                              ║
-║   \033[92m[■] Global Threat Intelligence Feed      [■] Quantum-Ready Encryption\033[95m                              ║
-║   \033[92m[■] Advanced Evasion Techniques          [■] Multi-Vector Attack Surface\033[95m                           ║
-║                                                                                                          ║
-║   \033[91m⚠  AUTHORIZED SECURITY TESTING ONLY - ILLEGAL USE PROHIBITED  ⚠\033[95m                                   ║
-║   \033[97m🌐 https://github.com/MiChaelinzo/CyberPunkNetrunner\033[95m                                                ║
+║   \033[38;5;196m⚠  NETWATCH ADVISORY: UNAUTHORIZED ACCESS IS A CORPO DEATH SENTENCE  ⚠\033[0m                        \033[38;5;201m║
+║   \033[38;5;51m🌐 https://github.com/MiChaelinzo/CyberPunkNetrunner\033[0m   \033[38;5;226m// NIGHT CITY // 2077\033[0m              \033[38;5;201m║
 ║                                                                                                          ║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝\033[0m
 """
 
+    # Cyberpunk 2077 themed menu categories
     MENU_CATEGORIES = {
-        "RECONNAISSANCE": {
-            "icon": "🔍",
-            "color": "\033[96m",
+        "BREACH_PROTOCOL": {
+            "icon": "◢◤",
+            "color": "\033[38;5;51m",  # Cyan
+            "description": "ICE Breaching & Network Infiltration",
             "modules": [
-                ("01", "Neural Network Scanner", "Advanced port & service detection with ML"),
-                ("02", "OSINT Harvester", "Open-source intelligence gathering"),
-                ("03", "DNS Intelligence", "DNS enumeration & zone transfer"),
-                ("04", "Subdomain Discovery", "Automated subdomain enumeration"),
-                ("05", "Technology Fingerprint", "Web technology identification"),
+                ("01", "Ping [QUICKHACK]", "Highlight enemies & reveal subnet topology"),
+                ("02", "Breach Protocol", "Matrix minigame for daemon upload"),
+                ("03", "Datamine [v1/v2/v3]", "Extract €$ and quickhack components"),
+                ("04", "Neural Subnet Mapper", "AI-powered network discovery"),
+                ("05", "ICE Analyzer", "Identify & classify security measures"),
             ]
         },
-        "NETWORK_OPS": {
-            "icon": "🌐",
-            "color": "\033[93m",
+        "COMBAT_QUICKHACKS": {
+            "icon": "⚡",
+            "color": "\033[38;5;196m",  # Red
+            "description": "Offensive Quickhacks - Direct Damage",
             "modules": [
-                ("10", "Network Mapper", "Advanced network topology discovery"),
-                ("11", "Traffic Analyzer", "Real-time packet inspection"),
-                ("12", "ARP Spoofer", "Man-in-the-middle operations"),
-                ("13", "Port Knocker", "Port knocking sequence generator"),
-                ("14", "Bandwidth Monitor", "Network throughput analysis"),
+                ("10", "Short Circuit", "Non-lethal EMP - overload neural implants"),
+                ("11", "Synapse Burnout", "Lethal - fry enemy cybernetics"),
+                ("12", "Contagion [DAEMON]", "Poison spreads through local subnet"),
+                ("13", "System Collapse", "Massively damage all networked enemies"),
+                ("14", "Cyberpsychosis", "Turn enemies against each other"),
             ]
         },
-        "WEB_SECURITY": {
-            "icon": "🕸️",
-            "color": "\033[92m",
-            "modules": [
-                ("20", "SQLi Scanner", "SQL injection vulnerability scanner"),
-                ("21", "XSS Hunter", "Cross-site scripting detection"),
-                ("22", "Directory Buster", "Web path enumeration"),
-                ("23", "API Fuzzer", "REST/GraphQL API testing"),
-                ("24", "WAF Bypass Toolkit", "Web application firewall evasion"),
-            ]
-        },
-        "EXPLOITATION": {
-            "icon": "💀",
-            "color": "\033[91m",
-            "modules": [
-                ("30", "Exploit Framework", "Automated exploitation engine"),
-                ("31", "Payload Generator", "Custom payload creation"),
-                ("32", "Shell Manager", "Reverse shell handler"),
-                ("33", "Privilege Escalation", "Local privilege escalation"),
-                ("34", "Persistence Toolkit", "Post-exploitation persistence"),
-            ]
-        },
-        "WIRELESS": {
-            "icon": "📡",
-            "color": "\033[95m",
-            "modules": [
-                ("40", "WiFi Analyzer", "Wireless network analysis"),
-                ("41", "Deauth Attack", "WiFi deauthentication"),
-                ("42", "Evil Twin", "Rogue access point deployment"),
-                ("43", "WPS Cracker", "WPS PIN brute force"),
-                ("44", "Bluetooth Scanner", "BLE device discovery"),
-            ]
-        },
-        "STEALTH": {
+        "COVERT_QUICKHACKS": {
             "icon": "👻",
-            "color": "\033[90m",
+            "color": "\033[38;5;213m",  # Pink
+            "description": "Stealth Quickhacks - Infiltration",
             "modules": [
-                ("50", "TOR Gateway", "Anonymous network routing"),
-                ("51", "Proxy Chain", "Multi-hop proxy configuration"),
-                ("52", "MAC Spoofer", "Hardware address manipulation"),
-                ("53", "Log Cleaner", "Forensic countermeasures"),
-                ("54", "Anti-Forensics", "Evidence destruction toolkit"),
+                ("20", "Whistle [DISTRACT]", "Lure enemies to position"),
+                ("21", "Memory Wipe", "Target forgets seeing you"),
+                ("22", "Reboot Optics", "Temporarily blind enemies"),
+                ("23", "Weapon Glitch", "Jam enemy weapons"),
+                ("24", "Cripple Movement", "Disable enemy legs/wheels"),
             ]
         },
-        "SOCIAL_ENG": {
+        "CONTROL_QUICKHACKS": {
             "icon": "🎭",
-            "color": "\033[33m",
+            "color": "\033[38;5;226m",  # Yellow
+            "description": "Device & Environment Control",
             "modules": [
-                ("60", "Phishing Framework", "Advanced phishing campaigns"),
-                ("61", "Credential Harvester", "Login credential capture"),
-                ("62", "QR Jacker", "QR code manipulation"),
-                ("63", "SMS Spoofer", "SMS origin spoofing"),
-                ("64", "Social Profiler", "Social media intelligence"),
+                ("30", "Distract Enemies", "Activate environmental distractions"),
+                ("31", "Remote Activation", "Trigger devices remotely"),
+                ("32", "Take Control", "Hijack turrets, cameras, drones"),
+                ("33", "Detonate Grenade", "Trigger enemy grenades"),
+                ("34", "Cyberware Malfunction", "Disable mantis blades, gorilla arms"),
             ]
         },
-        "FORENSICS": {
+        "DAEMON_UPLOAD": {
+            "icon": "🔥",
+            "color": "\033[38;5;208m",  # Orange
+            "description": "Persistent Daemons - Breach Protocol Rewards",
+            "modules": [
+                ("40", "DATAMINE_V1", "Extract €$100-500"),
+                ("41", "DATAMINE_V2", "Extract €$500-1000 + components"),
+                ("42", "DATAMINE_V3", "Extract €$1000-2500 + epic quickhacks"),
+                ("43", "ICEPICK [DAEMON]", "Reduce RAM cost of quickhacks"),
+                ("44", "MASS VULNERABILITY", "Enemies take +30% damage"),
+            ]
+        },
+        "ULTIMATE_QUICKHACKS": {
+            "icon": "💀",
+            "color": "\033[38;5;201m",  # Magenta
+            "description": "Legendary Quickhacks - Maximum Destruction",
+            "modules": [
+                ("50", "Suicide", "Target eliminates themselves"),
+                ("51", "Detonate [LEGENDARY]", "Enemy grenades go critical"),
+                ("52", "System Reset", "Non-lethal instant takedown"),
+                ("53", "Blackwall Gateway", "Upload RELIC malware [EXTREME]"),
+                ("54", "JOHNNY'S LEGACY", "Alt Cunningham's neural virus"),
+            ]
+        },
+        "ARASAKA_PROTOCOLS": {
+            "icon": "🏢",
+            "color": "\033[38;5;255m",  # White
+            "description": "Corporate Security Countermeasures",
+            "modules": [
+                ("60", "Phishing Campaign", "Credential harvesting via email"),
+                ("61", "Spear Phishing", "Targeted executive compromise"),
+                ("62", "QR Jacking", "Malicious QR code injection"),
+                ("63", "Social Profiler", "OSINT on corporate targets"),
+                ("64", "Deepfake Generator", "AI-generated impersonation"),
+            ]
+        },
+        "MILITECH_ARSENAL": {
+            "icon": "🔫",
+            "color": "\033[38;5;124m",  # Dark Red
+            "description": "Military-Grade Exploitation Tools",
+            "modules": [
+                ("70", "Exploit Framework", "Zero-day deployment platform"),
+                ("71", "Payload Forge", "Custom shellcode generator"),
+                ("72", "Shell Handler", "Reverse connection manager"),
+                ("73", "PrivEsc Suite", "Local privilege escalation"),
+                ("74", "Persistence Daemon", "Maintain access post-reboot"),
+            ]
+        },
+        "BLACKHAND_FORENSICS": {
             "icon": "🔬",
-            "color": "\033[94m",
+            "color": "\033[38;5;39m",  # Light Blue
+            "description": "Morgan Blackhand's Investigation Kit",
             "modules": [
-                ("70", "Memory Analyzer", "RAM forensics analysis"),
-                ("71", "Disk Imager", "Forensic disk imaging"),
-                ("72", "File Carver", "Deleted file recovery"),
-                ("73", "Metadata Extractor", "Document metadata analysis"),
-                ("74", "Timeline Builder", "Event timeline reconstruction"),
+                ("80", "RAM Analyzer", "Volatile memory forensics"),
+                ("81", "Braindance Imager", "Disk forensic imaging"),
+                ("82", "File Carver", "Deleted data recovery"),
+                ("83", "Metadata Stripper", "Clean document traces"),
+                ("84", "Timeline Reconstructor", "Event sequence analysis"),
             ]
         },
-        "CRYPTO": {
+        "RELIC_CRYPTO": {
             "icon": "🔐",
-            "color": "\033[36m",
+            "color": "\033[38;5;46m",  # Green
+            "description": "Soulkiller & Encryption Breaking",
             "modules": [
-                ("80", "Hash Cracker", "Password hash attacks"),
-                ("81", "Cipher Analyzer", "Cryptographic analysis"),
-                ("82", "Key Generator", "Secure key generation"),
-                ("83", "Steganography", "Hidden data extraction"),
-                ("84", "Blockchain Forensics", "Cryptocurrency tracing"),
-            ]
-        },
-        "CLOUD_SEC": {
-            "icon": "☁️",
-            "color": "\033[97m",
-            "modules": [
-                ("90", "AWS Scanner", "Amazon Web Services audit"),
-                ("91", "Azure Recon", "Microsoft Azure enumeration"),
-                ("92", "GCP Analyzer", "Google Cloud Platform scan"),
-                ("93", "Container Security", "Docker/K8s vulnerability scan"),
-                ("94", "S3 Bucket Finder", "Cloud storage discovery"),
+                ("90", "Hash Annihilator", "Brute-force password cracking"),
+                ("91", "Cipher Breaker", "Cryptanalysis toolkit"),
+                ("92", "Key Forge", "Secure key generation"),
+                ("93", "Steganography", "Hidden message extraction"),
+                ("94", "Blockchain Tracker", "Eddie trace & crypto forensics"),
             ]
         },
     }
 
     def __init__(self, config_path: Optional[str] = None):
-        """Initialize the PHANTOM Engine"""
+        """Initialize the Cyberdeck Engine - Jack into the Net"""
         self.state = SystemState()
         self.console = Console() if RICH_AVAILABLE else None
         self.config_path = config_path or self._default_config_path()
@@ -213,7 +246,7 @@ class PhantomEngine:
         self._callbacks: Dict[str, List[Callable]] = {}
         
     def _default_config_path(self) -> str:
-        """Get default configuration path"""
+        """Get default Cyberdeck configuration path"""
         return str(Path.home() / ".phantom" / "config.yaml")
     
     def _setup_signal_handlers(self):
@@ -222,86 +255,92 @@ class PhantomEngine:
         signal.signal(signal.SIGTERM, self._signal_handler)
     
     def _signal_handler(self, signum, frame):
-        """Handle system signals for graceful shutdown"""
-        self.display_message("\n[!] Shutdown signal received. Cleaning up...", "warning")
+        """Handle system signals for graceful jack-out"""
+        self.display_message("\n[!] EMERGENCY JACK-OUT INITIATED - Cleaning traces...", "warning")
         self.cleanup()
         sys.exit(0)
     
     def display_banner(self):
-        """Display the PHANTOM banner"""
+        """Display the PHANTOM Cyberdeck boot sequence"""
         os.system('cls' if os.name == 'nt' else 'clear')
         print(self.BANNER)
         
     def display_message(self, message: str, msg_type: str = "info"):
-        """Display formatted message"""
+        """Display formatted Netrunner message"""
         colors = {
-            "info": "\033[96m",
-            "success": "\033[92m",
-            "warning": "\033[93m",
-            "error": "\033[91m",
-            "debug": "\033[90m"
+            "info": "\033[38;5;51m",      # Cyan - standard info
+            "success": "\033[38;5;46m",    # Green - breach successful
+            "warning": "\033[38;5;226m",   # Yellow - NetWatch alert
+            "error": "\033[38;5;196m",     # Red - ICE detected
+            "debug": "\033[38;5;244m",     # Gray - system debug
+            "quickhack": "\033[38;5;201m"  # Magenta - quickhack loaded
         }
         icons = {
-            "info": "ℹ",
-            "success": "✓",
-            "warning": "⚠",
-            "error": "✗",
-            "debug": "●"
+            "info": "◢◤",
+            "success": "✓ BREACH",
+            "warning": "⚠ ALERT",
+            "error": "✗ ICE",
+            "debug": "●",
+            "quickhack": "⚡"
         }
         color = colors.get(msg_type, "\033[0m")
         icon = icons.get(msg_type, "")
         print(f"{color}[{icon}] {message}\033[0m")
     
     def display_menu(self):
-        """Display the main operation menu"""
+        """Display the Netrunner Quickhack Menu"""
         if RICH_AVAILABLE:
             self._display_rich_menu()
         else:
             self._display_simple_menu()
     
     def _display_rich_menu(self):
-        """Display menu using Rich library"""
+        """Display menu using Rich library - Cyberpunk style"""
         table = Table(show_header=True, header_style="bold magenta", border_style="cyan")
         table.add_column("ID", style="cyan", width=4)
-        table.add_column("Module", style="green", width=25)
-        table.add_column("Description", style="white", width=45)
+        table.add_column("Quickhack", style="green", width=28)
+        table.add_column("Effect", style="white", width=48)
         
         for category, data in self.MENU_CATEGORIES.items():
-            table.add_row("", f"{data['icon']} {category.replace('_', ' ')}", "", style="bold yellow")
+            desc = data.get('description', '')
+            table.add_row("", f"{data['icon']} {category.replace('_', ' ')}", desc, style="bold yellow")
             for mod_id, name, desc in data["modules"]:
                 table.add_row(mod_id, name, desc)
         
         table.add_row("", "", "")
-        table.add_row("99", "⚙️  System Configuration", "Settings and preferences")
-        table.add_row("00", "🚪 Exit PHANTOM", "Terminate session safely")
+        table.add_row("99", "⚙️  Cyberdeck Settings", "Configure your neural interface")
+        table.add_row("00", "🚪 Jack Out", "Disconnect safely from the Net")
         
         self.console.print(table)
     
     def _display_simple_menu(self):
-        """Display simple text menu"""
-        print("\n\033[95m╔════════════════════════════════════════════════════════════════════╗")
-        print("║               PHANTOM OPERATIONS COMMAND CENTER                    ║")
-        print("╚════════════════════════════════════════════════════════════════════╝\033[0m\n")
+        """Display Night City Netrunner terminal menu"""
+        print("\n\033[38;5;201m╔════════════════════════════════════════════════════════════════════════════════╗")
+        print("║       \033[38;5;51m◢◤ PHANTOM NETRUNNER - QUICKHACK COMMAND INTERFACE ◢◤\033[38;5;201m                    ║")
+        print("║       \033[38;5;226m      「 NIGHT CITY SUBNET // CYBERDECK ONLINE 」\033[38;5;201m                        ║")
+        print("╚════════════════════════════════════════════════════════════════════════════════╝\033[0m\n")
         
         for category, data in self.MENU_CATEGORIES.items():
-            print(f"\n{data['color']}━━━ {data['icon']} {category.replace('_', ' ')} ━━━\033[0m")
+            desc = data.get('description', '')
+            print(f"\n{data['color']}━━━ {data['icon']} {category.replace('_', ' ')} ━━━")
+            print(f"    \033[38;5;244m{desc}\033[0m")
             for mod_id, name, desc in data["modules"]:
-                print(f"  [{mod_id}] {name:<25} - {desc}")
+                print(f"  \033[38;5;51m[{mod_id}]\033[0m {name:<28} \033[38;5;244m- {desc}\033[0m")
         
-        print(f"\n\033[93m━━━ ⚙️  SYSTEM ━━━\033[0m")
-        print(f"  [99] System Configuration")
-        print(f"  [00] Exit PHANTOM")
+        print(f"\n\033[38;5;226m━━━ ⚙️  CYBERDECK SYSTEM ━━━\033[0m")
+        print(f"  \033[38;5;51m[99]\033[0m Cyberdeck Settings")
+        print(f"  \033[38;5;51m[00]\033[0m Jack Out")
         print()
     
-    def get_user_input(self, prompt: str = "PHANTOM") -> str:
-        """Get user input with styled prompt"""
+    def get_user_input(self, prompt: str = "NETRUNNER") -> str:
+        """Get user input with styled Cyberpunk prompt"""
         try:
-            return input(f"\033[95m┌──[\033[96m{prompt}\033[95m]\n└──▶ \033[97m").strip()
+            return input(f"\033[38;5;201m┌──[\033[38;5;51m{prompt}\033[38;5;201m@\033[38;5;226mNIGHT_CITY\033[38;5;201m]\n└──▶ \033[38;5;47m").strip()
         except EOFError:
             return "00"
     
     def run_module(self, module_id: str):
-        """Execute the selected module"""
+        """Execute the selected quickhack module"""
         # Find module in categories
         for category, data in self.MENU_CATEGORIES.items():
             for mod_id, name, desc in data["modules"]:
@@ -309,46 +348,46 @@ class PhantomEngine:
                     self._execute_module(category, mod_id, name)
                     return
         
-        self.display_message(f"Unknown module ID: {module_id}", "error")
+        self.display_message(f"Unknown quickhack ID: {module_id} - Check your buffer sequence", "error")
     
     def _execute_module(self, category: str, mod_id: str, name: str):
-        """Execute a specific module"""
-        self.display_message(f"Initializing {name}...", "info")
+        """Execute a specific quickhack"""
+        self.display_message(f"Uploading {name} to cyberdeck buffer...", "quickhack")
         
-        # Module routing - this will be expanded with actual implementations
+        # Quickhack routing - this will be expanded with actual implementations
         module_handlers = {
-            "01": self._run_neural_scanner,
-            "02": self._run_osint_harvester,
-            "20": self._run_sqli_scanner,
-            "21": self._run_xss_hunter,
-            "30": self._run_exploit_framework,
-            "40": self._run_wifi_analyzer,
-            "50": self._run_tor_gateway,
-            "60": self._run_phishing_framework,
-            "70": self._run_memory_analyzer,
-            "80": self._run_hash_cracker,
-            "90": self._run_aws_scanner,
+            "01": self._run_ping_quickhack,
+            "02": self._run_breach_protocol,
+            "20": self._run_whistle_distract,
+            "21": self._run_memory_wipe,
+            "30": self._run_distract_enemies,
+            "40": self._run_datamine_v1,
+            "50": self._run_system_reset,
+            "60": self._run_phishing_campaign,
+            "70": self._run_exploit_framework,
+            "80": self._run_ram_analyzer,
+            "90": self._run_hash_annihilator,
         }
         
         handler = module_handlers.get(mod_id, self._module_placeholder)
         handler(name)
     
     def _module_placeholder(self, name: str):
-        """Placeholder for modules under development"""
-        self.display_message(f"Module '{name}' is loading...", "info")
+        """Placeholder for quickhacks under development"""
+        self.display_message(f"Loading quickhack: '{name}' into RAM buffer...", "info")
         self._show_tool_submenu(name)
     
     def _show_tool_submenu(self, name: str):
-        """Show a submenu for tool operations"""
+        """Show a submenu for quickhack operations"""
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"\n\033[95m╔════════════════════════════════════════════════════════════════╗")
-        print(f"║  {name:^60}  ║")
+        print(f"\n\033[38;5;201m╔════════════════════════════════════════════════════════════════╗")
+        print(f"║  \033[38;5;51m◢◤ QUICKHACK: \033[38;5;226m{name:^42}\033[38;5;51m ◢◤\033[38;5;201m  ║")
         print(f"╚════════════════════════════════════════════════════════════════╝\033[0m\n")
         
-        print("\033[96m  [1] Install Dependencies")
-        print("  [2] Run Module")
-        print("  [3] View Documentation")
-        print("  [99] Back to Main Menu\033[0m\n")
+        print("\033[38;5;51m  [1] Install Dependencies (Download from Net)")
+        print("  [2] Execute Quickhack (Upload to Target)")
+        print("  [3] View Quickhack Documentation")
+        print("  [99] Return to Cyberdeck Menu\033[0m\n")
         
         choice = self.get_user_input(name[:15])
         
@@ -360,84 +399,85 @@ class PhantomEngine:
             self._show_documentation(name)
     
     def _install_dependencies(self, name: str):
-        """Install module dependencies"""
-        self.display_message(f"Installing dependencies for {name}...", "info")
+        """Download quickhack components from the Net"""
+        self.display_message(f"Downloading {name} components from Night City darknet...", "info")
         # Placeholder for dependency installation
-        self.display_message("Dependencies installed successfully!", "success")
-        input("\nPress Enter to continue...")
+        self.display_message("Components installed - Quickhack ready for upload!", "success")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def _run_tool_interactive(self, name: str):
-        """Run a tool interactively"""
-        self.display_message(f"Launching {name}...", "info")
+        """Execute a quickhack against target"""
+        self.display_message(f"Executing {name} - Neural link active...", "quickhack")
         # Placeholder for tool execution
-        input("\nPress Enter to continue...")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def _show_documentation(self, name: str):
-        """Show module documentation"""
-        print(f"\n\033[97m{'='*60}\n{name} Documentation\n{'='*60}\033[0m\n")
-        print("Documentation will be displayed here.")
-        input("\nPress Enter to continue...")
+        """Show quickhack documentation"""
+        print(f"\n\033[38;5;51m{'='*60}\n◢◤ {name} - Quickhack Documentation\n{'='*60}\033[0m\n")
+        print("\033[38;5;244mDocumentation will be displayed here.")
+        print("Includes RAM cost, cooldown, and optimal use cases.\033[0m")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
-    # Module implementation stubs
-    def _run_neural_scanner(self, name: str):
-        """Neural Network Scanner implementation"""
+    # Quickhack implementation stubs with Cyberpunk 2077 names
+    def _run_ping_quickhack(self, name: str):
+        """Ping Quickhack - Reveals enemies and network topology"""
         self._show_tool_submenu(name)
     
-    def _run_osint_harvester(self, name: str):
-        """OSINT Harvester implementation"""
+    def _run_breach_protocol(self, name: str):
+        """Breach Protocol - Matrix minigame for daemon upload"""
         self._show_tool_submenu(name)
     
-    def _run_sqli_scanner(self, name: str):
-        """SQL Injection Scanner implementation"""
+    def _run_whistle_distract(self, name: str):
+        """Whistle - Distract enemies to your position"""
         self._show_tool_submenu(name)
     
-    def _run_xss_hunter(self, name: str):
-        """XSS Hunter implementation"""
+    def _run_memory_wipe(self, name: str):
+        """Memory Wipe - Target forgets seeing you"""
+        self._show_tool_submenu(name)
+    
+    def _run_distract_enemies(self, name: str):
+        """Distract Enemies - Environmental distractions"""
+        self._show_tool_submenu(name)
+    
+    def _run_datamine_v1(self, name: str):
+        """Datamine v1 - Extract eddies from local subnet"""
+        self._show_tool_submenu(name)
+    
+    def _run_system_reset(self, name: str):
+        """System Reset - Non-lethal instant takedown"""
+        self._show_tool_submenu(name)
+    
+    def _run_phishing_campaign(self, name: str):
+        """Phishing Campaign - Credential harvesting"""
         self._show_tool_submenu(name)
     
     def _run_exploit_framework(self, name: str):
-        """Exploit Framework implementation"""
+        """Exploit Framework - Zero-day deployment"""
         self._show_tool_submenu(name)
     
-    def _run_wifi_analyzer(self, name: str):
-        """WiFi Analyzer implementation"""
+    def _run_ram_analyzer(self, name: str):
+        """RAM Analyzer - Memory forensics"""
         self._show_tool_submenu(name)
     
-    def _run_tor_gateway(self, name: str):
-        """TOR Gateway implementation"""
-        self._show_tool_submenu(name)
-    
-    def _run_phishing_framework(self, name: str):
-        """Phishing Framework implementation"""
-        self._show_tool_submenu(name)
-    
-    def _run_memory_analyzer(self, name: str):
-        """Memory Analyzer implementation"""
-        self._show_tool_submenu(name)
-    
-    def _run_hash_cracker(self, name: str):
-        """Hash Cracker implementation"""
-        self._show_tool_submenu(name)
-    
-    def _run_aws_scanner(self, name: str):
-        """AWS Scanner implementation"""
+    def _run_hash_annihilator(self, name: str):
+        """Hash Annihilator - Password cracking"""
         self._show_tool_submenu(name)
     
     def show_config_menu(self):
-        """Display configuration menu"""
+        """Display Cyberdeck configuration menu"""
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("\n\033[95m╔════════════════════════════════════════════════════════════════╗")
-        print("║               SYSTEM CONFIGURATION                             ║")
+        print("\n\033[38;5;201m╔════════════════════════════════════════════════════════════════╗")
+        print("║         \033[38;5;51m◢◤ CYBERDECK CONFIGURATION INTERFACE ◢◤\033[38;5;201m               ║")
         print("╚════════════════════════════════════════════════════════════════╝\033[0m\n")
         
-        print("\033[96m  [1] Set Operations Directory")
-        print("  [2] Configure Proxy Settings")
-        print("  [3] Update PHANTOM")
-        print("  [4] Check for Updates")
-        print("  [5] View System Info")
-        print("  [6] Reset Configuration")
-        print("  [7] Uninstall PHANTOM")
-        print("  [99] Back to Main Menu\033[0m\n")
+        print("\033[38;5;51m  [1] Set Operations Directory (Safehouse)")
+        print("  [2] Configure Proxy Chain (Anonymity)")
+        print("  [3] Update PHANTOM (Download Latest)")
+        print("  [4] Check for Updates (Scan Darknet)")
+        print("  [5] View Cyberdeck Specs")
+        print("  [6] Reset Cyberdeck (Factory Default)")
+        print("  [7] Uninstall PHANTOM (Burn Evidence)")
+        print("  [99] Return to Main Interface\033[0m\n")
         
         choice = self.get_user_input("CONFIG")
         self._handle_config_choice(choice)
@@ -460,79 +500,85 @@ class PhantomEngine:
             self._uninstall_phantom()
     
     def _set_operations_directory(self):
-        """Set the operations directory"""
-        print("\n\033[97mCurrent directory: " + os.getcwd() + "\033[0m")
-        new_path = input("\nEnter new operations directory (or press Enter to keep current): ").strip()
+        """Set the Netrunner safehouse directory"""
+        print("\n\033[38;5;51mCurrent safehouse: " + os.getcwd() + "\033[0m")
+        new_path = input("\nEnter new safehouse location (or press Enter to keep current): ").strip()
         if new_path:
             if os.path.exists(new_path):
-                self.display_message(f"Operations directory set to: {new_path}", "success")
+                self.display_message(f"Safehouse relocated to: {new_path}", "success")
             else:
-                create = input("Directory doesn't exist. Create it? [y/n]: ").strip().lower()
+                create = input("\033[38;5;226mLocation doesn't exist. Create it? [y/n]: \033[0m").strip().lower()
                 if create == 'y':
                     os.makedirs(new_path, exist_ok=True)
-                    self.display_message(f"Directory created and set: {new_path}", "success")
-        input("\nPress Enter to continue...")
+                    self.display_message(f"New safehouse established: {new_path}", "success")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def _configure_proxy(self):
-        """Configure proxy settings"""
-        print("\n\033[97mProxy Configuration\033[0m")
-        proxy = input("Enter proxy address (e.g., http://127.0.0.1:8080): ").strip()
+        """Configure proxy chain for anonymity"""
+        print("\n\033[38;5;51m◢◤ Proxy Chain Configuration ◢◤\033[0m")
+        proxy = input("Enter proxy address (e.g., socks5://127.0.0.1:9050): ").strip()
         if proxy:
-            self.display_message(f"Proxy configured: {proxy}", "success")
-        input("\nPress Enter to continue...")
+            self.display_message(f"Proxy chain configured: {proxy}", "success")
+            self.display_message("Your connection is now routed through the proxy.", "info")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def _update_phantom(self):
-        """Update PHANTOM to latest version"""
-        self.display_message("Checking for updates...", "info")
+        """Update PHANTOM from the darknet"""
+        self.display_message("Connecting to Night City darknet for updates...", "info")
         os.system("git pull origin main 2>/dev/null || git pull origin master 2>/dev/null")
-        self.display_message("Update complete!", "success")
-        input("\nPress Enter to continue...")
+        self.display_message("Cyberdeck firmware updated!", "success")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def _check_updates(self):
-        """Check for available updates"""
-        self.display_message("Checking for updates...", "info")
-        self.display_message(f"Current version: {self.VERSION}", "info")
-        self.display_message("You have the latest version!", "success")
-        input("\nPress Enter to continue...")
+        """Scan darknet for available updates"""
+        self.display_message("Scanning darknet for PHANTOM updates...", "info")
+        self.display_message(f"Current firmware: v{self.VERSION}", "info")
+        self.display_message("You have the latest version - Cyberdeck optimal!", "success")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def _show_system_info(self):
-        """Display system information"""
+        """Display Cyberdeck specifications"""
         import platform
-        print("\n\033[97m" + "="*50)
-        print("PHANTOM SYSTEM INFORMATION")
-        print("="*50 + "\033[0m\n")
-        print(f"\033[96mVersion:      \033[97m{self.VERSION}")
-        print(f"\033[96mCodename:     \033[97m{self.CODENAME}")
-        print(f"\033[96mPython:       \033[97m{platform.python_version()}")
-        print(f"\033[96mPlatform:     \033[97m{platform.system()} {platform.release()}")
-        print(f"\033[96mArchitecture: \033[97m{platform.machine()}")
-        print(f"\033[96mUser:         \033[97m{os.getenv('USER', 'unknown')}")
-        print(f"\033[96mHome:         \033[97m{Path.home()}\033[0m")
-        input("\nPress Enter to continue...")
+        print("\n\033[38;5;51m" + "="*60)
+        print("◢◤ CYBERDECK SPECIFICATIONS ◢◤")
+        print("="*60 + "\033[0m\n")
+        print(f"\033[38;5;201mModel:        \033[38;5;47m{self.CYBERDECK}")
+        print(f"\033[38;5;201mFirmware:     \033[38;5;47mv{self.VERSION}")
+        print(f"\033[38;5;201mCodename:     \033[38;5;47m{self.CODENAME}")
+        print(f"\033[38;5;201mRAM Units:    \033[38;5;47m{self.state.ram_units}")
+        print(f"\033[38;5;201mBuffer Slots: \033[38;5;47m6")
+        print(f"\033[38;5;201mPython Core:  \033[38;5;47m{platform.python_version()}")
+        print(f"\033[38;5;201mOS Substrate: \033[38;5;47m{platform.system()} {platform.release()}")
+        print(f"\033[38;5;201mArchitecture: \033[38;5;47m{platform.machine()}")
+        print(f"\033[38;5;201mNetrunner:    \033[38;5;47m{os.getenv('USER', 'unknown')}")
+        print(f"\033[38;5;201mHome Node:    \033[38;5;47m{Path.home()}\033[0m")
+        print(f"\n\033[38;5;226mICE Breached: \033[38;5;47m{self.state.ice_breached}\033[0m")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def _reset_configuration(self):
-        """Reset all configuration to defaults"""
-        confirm = input("\n\033[91mAre you sure you want to reset all configuration? [y/N]: \033[0m").strip().lower()
+        """Reset Cyberdeck to factory defaults"""
+        confirm = input("\n\033[38;5;196mAre you sure you want to factory reset your Cyberdeck? [y/N]: \033[0m").strip().lower()
         if confirm == 'y':
-            self.display_message("Configuration reset to defaults", "success")
-        input("\nPress Enter to continue...")
+            self.display_message("Cyberdeck reset to factory configuration", "success")
+            self.display_message("All custom quickhacks and daemons purged.", "warning")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def _uninstall_phantom(self):
-        """Uninstall PHANTOM"""
-        confirm = input("\n\033[91mAre you sure you want to uninstall PHANTOM? [y/N]: \033[0m").strip().lower()
+        """Uninstall PHANTOM - Burn all evidence"""
+        confirm = input("\n\033[38;5;196m⚠ DANGER: This will destroy all PHANTOM data. Continue? [y/N]: \033[0m").strip().lower()
         if confirm == 'y':
-            self.display_message("Uninstalling PHANTOM...", "warning")
-            self.display_message("PHANTOM has been uninstalled", "success")
+            self.display_message("Initiating evidence destruction protocol...", "warning")
+            self.display_message("PHANTOM has been wiped. You were never here.", "success")
             sys.exit(0)
-        input("\nPress Enter to continue...")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
     
     def cleanup(self):
-        """Cleanup resources before exit"""
-        self.display_message("Cleaning up resources...", "info")
+        """Cleanup resources before jack-out"""
+        self.display_message("Cleaning traces from local subnet...", "info")
         self.state.session_active = False
     
     def run(self):
-        """Main execution loop"""
+        """Main execution loop - Jack into the Net"""
         self.state.initialized = True
         self.state.session_active = True
         
@@ -543,10 +589,10 @@ class PhantomEngine:
                 
                 choice = self.get_user_input()
                 
-                if choice == "00" or choice.lower() == "exit":
-                    self.display_message("Terminating PHANTOM session...", "warning")
+                if choice == "00" or choice.lower() == "exit" or choice.lower() == "jackout":
+                    self.display_message("Initiating jack-out sequence...", "warning")
                     self.cleanup()
-                    print("\n\033[92m[✓] Thank you for using PHANTOM. Stay safe!\033[0m\n")
+                    print("\n\033[38;5;46m[✓] Neural link disconnected. Stay safe in Night City, choom!\033[0m\n")
                     break
                 elif choice == "99":
                     self.show_config_menu()
@@ -556,12 +602,12 @@ class PhantomEngine:
             except KeyboardInterrupt:
                 continue
             except Exception as e:
-                self.display_message(f"Error: {str(e)}", "error")
-                input("Press Enter to continue...")
+                self.display_message(f"ICE DETECTED: {str(e)}", "error")
+                input("\033[38;5;244mPress Enter to continue...\033[0m")
 
 
 def main():
-    """Entry point for PHANTOM"""
+    """Entry point for PHANTOM Netrunner - Welcome to Night City"""
     engine = PhantomEngine()
     engine.run()
 

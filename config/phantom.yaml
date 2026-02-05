@@ -1,86 +1,125 @@
-# PHANTOM Netrunner v3.0 Configuration
-# =====================================
-# This configuration file controls the behavior of the PHANTOM framework.
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  PHANTOM NETRUNNER v3.0 - CYBERDECK CONFIGURATION                           ║
+# ║  Night City Edition // 2077                                                  ║
+# ╠══════════════════════════════════════════════════════════════════════════════╣
+# ║  "The Net is deep, and full of ICE." - Netrunner Proverb                    ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
 
-# Core Settings
+# Cyberdeck Firmware Settings
 version: "3.0.0"
 codename: "PHANTOM"
+cyberdeck_model: "Netwatch Netdriver Mk.5"
 
-# Operations Directory
+# Safehouse Directory
 # All tools and data will be stored in this directory
 operations_dir: "~/phantom_ops"
 
-# Logging Settings
+# Cyberdeck RAM Configuration
+cyberdeck:
+  ram_units: 8           # Total RAM for quickhacks
+  buffer_slots: 6        # Breach protocol buffer size
+  neural_link: "stable"  # Neural interface status
+
+# Logging Settings (Audit Trail)
 logging:
   level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-  file: "~/.phantom/logs/phantom.log"
+  file: "~/.phantom/logs/netrun.log"
   max_size: 10485760  # 10MB
   backup_count: 5
+  include_timestamp: true
+  ghost_mode: false  # When true, no logs are written
 
-# Network Settings
+# Network Settings (Subnet Configuration)
 network:
   proxy_enabled: false
   proxy_host: ""
-  proxy_port: 8080
-  proxy_type: "http"  # http, socks4, socks5
+  proxy_port: 9050
+  proxy_type: "socks5"  # http, socks4, socks5, tor
   timeout: 30
   max_retries: 3
-  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+  user_agent: "Mozilla/5.0 (Night City; Linux x86_64) AppleWebKit/537.36 Chrome/2077.0 Safari/537.36 Netrunner/3.0"
 
-# Security Settings
-security:
-  anonymity_mode: false
+# Ghost Protocol Settings (Anonymity)
+ghost_protocol:
+  enabled: false
   tor_enabled: false
   tor_port: 9050
   vpn_check: true
   dns_leak_protection: true
   mac_spoofing: false
+  anti_forensics: false
 
-# Display Settings
+# Display Settings (Terminal Theme)
 display:
   color_enabled: true
   banner_enabled: true
   verbose_output: true
   animation_enabled: true
-  theme: "cyberpunk"  # cyberpunk, minimal, classic
+  theme: "night_city"  # night_city, corpo, street_kid, nomad
 
-# Module Settings
-modules:
-  reconnaissance:
+# Night City Color Scheme
+colors:
+  primary: "#00FFFF"      # Neon Cyan
+  secondary: "#FF00FF"    # Neon Magenta
+  accent: "#FFFF00"       # Neon Yellow
+  success: "#00FF00"      # Neon Green
+  danger: "#FF0055"       # Neon Red/Pink
+  warning: "#FF8800"      # Neon Orange
+  muted: "#888888"        # Street Grey
+
+# Quickhack Module Settings
+quickhacks:
+  breach_protocol:
+    matrix_size: 6
+    time_limit: 30
+    daemon_slots: 3
+    
+  combat:
     thread_count: 50
     timeout: 5
     
-  network:
-    interface: "eth0"
-    scan_timeout: 30
+  covert:
+    stealth_mode: true
+    delay_ms: 100
     
-  web:
-    threads: 10
-    timeout: 10
+  control:
+    device_timeout: 10
     follow_redirects: true
-    
-  wireless:
-    interface: "wlan0"
-    scan_duration: 30
-    
-  exploit:
-    listener_port: 4444
-    payload_dir: "~/.phantom/payloads"
 
-# API Keys (Optional)
+# ICE Detection Settings
+ice_detection:
+  enabled: true
+  alert_level: "medium"  # low, medium, high, paranoid
+  auto_jack_out: false   # Emergency disconnect on detection
+
+# Wireless Settings (Signal Quickhacks)
+wireless:
+  interface: "wlan0"
+  scan_duration: 30
+  monitor_mode: false
+
+# Militech Arsenal (Exploitation)
+militech:
+  listener_port: 4444
+  payload_dir: "~/.phantom/payloads"
+  encryption: "aes256"
+
+# API Keys (Darknet Connections)
 # Add your API keys here for enhanced functionality
 api_keys:
   shodan: ""
   virustotal: ""
   hunter: ""
   haveibeenpwned: ""
+  censys: ""
 
-# Custom Scripts
-# Add paths to custom scripts here
-custom_scripts: []
+# Custom Quickhacks
+# Add paths to custom quickhack scripts here
+custom_quickhacks: []
 
-# Plugin Settings
+# Plugin Settings (Quickhack Loader)
 plugins:
   enabled: true
   plugin_dir: "~/.phantom/plugins"
   auto_load: true
+  sandbox_mode: true  # Run plugins in isolated environment
