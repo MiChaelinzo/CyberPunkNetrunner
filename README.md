@@ -308,6 +308,24 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
+## 🏆 A W A R D S
+
+<p align="center">
+  <a href="https://github.com/ryo-ma/github-profile-trophy">
+    <img src="https://github-profile-trophy-fork-two.vercel.app/?username=MiChaelinzo&theme=onedark&no-frame=true&no-bg=true&row=2&column=3&margin-w=15&margin-h=15" alt="GitHub Trophies"/>
+  </a>
+</p>
+
+> **Note:** If trophies are not displaying, the main endpoint may be down due to high traffic. You can try these alternative mirror endpoints:
+> - `https://github-profile-trophy-fork-two.vercel.app/` (current)
+> - `https://github-profile-trophy-liard-delta.vercel.app/`
+> - `https://github-profile-trophy-winning.vercel.app/`
+> - `https://github-profile-trophy-kannan.vercel.app/`
+> 
+> See the [github-profile-trophy repository](https://github.com/ryo-ma/github-profile-trophy) for more alternatives and updates.
+
+---
+
 <p align="center">
   <b>⭐ Star this repository if you find it useful! ⭐</b>
 </p>
