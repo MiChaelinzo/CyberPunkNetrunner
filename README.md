@@ -33,6 +33,7 @@
   <a href="https://github.com/MiChaelinzo/CyberPunkNetrunner/network/members"><img src="https://img.shields.io/github/forks/MiChaelinzo/CyberPunkNetrunner?style=flat-square&color=00ffff"/></a>
   <a href="https://github.com/MiChaelinzo/CyberPunkNetrunner/stargazers"><img src="https://img.shields.io/github/stars/MiChaelinzo/CyberPunkNetrunner?style=flat-square&color=ffff00"/></a>
   <a href="https://github.com/MiChaelinzo/CyberPunkNetrunner/blob/master/LICENSE"><img src="https://img.shields.io/github/license/MiChaelinzo/CyberPunkNetrunner?style=flat-square&color=ff0055"/></a>
+  <a href="https://github.com/sponsors/michaelinzo"><img src="https://img.shields.io/badge/Sponsor-💖-ff00ff?style=flat-square"/></a>
 </p>
 
 ---
@@ -355,6 +356,53 @@ Contributions are welcome, choom! Feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some PreemQuickhack'`)
 4. Push to the branch (`git push origin feature/PreemQuickhack`)
 5. Open a Pull Request
+
+---
+
+## 💰 Support the Project // Fund the Netrunner
+
+<p align="center">
+  <b>Help keep the lights on in the safehouse, choom!</b>
+</p>
+
+If you find PHANTOM Netrunner useful and want to support continued development, consider sponsoring or donating. Your support helps fund:
+
+- 🔧 **New Quickhacks** - More powerful tools for the cyberdeck
+- 🛡️ **Security Updates** - Stay ahead of NetWatch
+- 📚 **Documentation** - Better guides for new netrunners
+- 🚀 **Performance Improvements** - Faster breach protocols
+- 🌐 **Community Features** - More ways to collaborate
+
+### Ways to Support
+
+<p align="center">
+  <a href="https://github.com/sponsors/michaelinzo">
+    <img src="https://img.shields.io/badge/GitHub_Sponsors-ff00ff?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Sponsors"/>
+  </a>
+  <a href="https://paypal.me/michaelinzo77">
+    <img src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal"/>
+  </a>
+</p>
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     💎 BECOME A NETRUNNER SPONSOR 💎                         ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  Every eddie counts in Night City! Your sponsorship helps keep this          ║
+║  project alive and growing. Sponsors get:                                    ║
+║                                                                              ║
+║  ⭐ Recognition in the README                                                ║
+║  ⭐ Early access to new quickhacks                                           ║
+║  ⭐ Priority support from the crew                                           ║
+║  ⭐ Exclusive updates on upcoming features                                   ║
+║                                                                              ║
+║  "In Night City, you either help your chooms or you're alone." — V          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+<p align="center">
+  <i>Even a small donation keeps the safehouse running. Thank you for your support! 🙏</i>
+</p>
 
 ---
 
