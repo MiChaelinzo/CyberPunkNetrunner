@@ -221,6 +221,8 @@ class PhantomEngine:
                 ("72", "Shell Handler", "Reverse shell listener"),
                 ("73", "PrivEsc Suite", "List all available payloads"),
                 ("74", "Persistence Daemon", "View active shell sessions"),
+                ("75", "External Arsenal", "Launch external exploit tools (RouterSploit/Commix/etc)"),
+                ("76", "Legacy Netrunner", "Access classic Netrunner.py tools & exploits"),
             ]
         },
         "BLACKHAND_FORENSICS": {
@@ -441,6 +443,8 @@ class PhantomEngine:
             "72": self._run_shell_handler,
             "73": self._run_list_payloads,
             "74": self._run_active_sessions,
+            "75": self._run_external_tools,
+            "76": self._run_legacy_netrunner,
             # BLACKHAND_FORENSICS - Forensics
             "80": self._run_file_analysis,
             "81": self._run_disk_imager,
@@ -933,25 +937,45 @@ class PhantomEngine:
         self._print_results(result, f"Vulnerability Scan: {target}")
 
     def _run_payload_generator(self, name: str):
-        """Payload generation"""
+        """Payload generation - reverse shells and web shells"""
         available = self.exploit_framework.list_payloads()
-        print("\n\033[38;5;51mAvailable payload types:\033[0m")
-        all_shells = available.get('reverse_shells', [])
-        for i, s in enumerate(all_shells, 1):
+        reverse_shells = available.get('reverse_shells', [])
+        web_shells = available.get('web_shells', [])
+
+        print("\n\033[38;5;51m━━━ Reverse Shells ━━━\033[0m")
+        for i, s in enumerate(reverse_shells, 1):
             print(f"  \033[38;5;51m[{i}]\033[0m {s}")
-        choice = self._get_target("Select shell type number")
-        host = self._get_target("Enter LHOST (your IP)")
-        port_str = self._get_target("Enter LPORT") or "4444"
-        port = self._safe_int(port_str, 4444, "port")
-        if choice and choice.isdigit() and host:
-            idx = int(choice) - 1
-            if 0 <= idx < len(all_shells):
-                shell_type = all_shells[idx]
+        offset = len(reverse_shells)
+        print(f"\n\033[38;5;51m━━━ Web Shells ━━━\033[0m")
+        for i, s in enumerate(web_shells, offset + 1):
+            print(f"  \033[38;5;51m[{i}]\033[0m {s}")
+
+        choice = self._get_target("Select payload type number")
+        if not choice or not choice.isdigit():
+            input("\n\033[38;5;244mPress Enter to continue...\033[0m")
+            return
+        idx = int(choice) - 1
+        if 0 <= idx < len(reverse_shells):
+            shell_type = reverse_shells[idx]
+            host = self._get_target("Enter LHOST (your IP)")
+            port_str = self._get_target("Enter LPORT") or "4444"
+            port = self._safe_int(port_str, 4444, "port")
+            if host:
                 payload = self.exploit_framework.generate_payload(shell_type, host, port)
-                print(f"\n\033[38;5;51m{'='*60}")
-                print(f"◢◤ Generated Payload: {payload.name}")
-                print(f"{'='*60}\033[0m\n")
-                print(f"\033[38;5;47m{payload.code}\033[0m")
+            else:
+                input("\n\033[38;5;244mPress Enter to continue...\033[0m")
+                return
+        elif 0 <= idx - offset < len(web_shells):
+            shell_type = web_shells[idx - offset]
+            payload = self.exploit_framework.generate_payload(shell_type)
+        else:
+            self.display_message("Invalid selection.", "error")
+            input("\n\033[38;5;244mPress Enter to continue...\033[0m")
+            return
+        print(f"\n\033[38;5;51m{'='*60}")
+        print(f"◢◤ Generated Payload: {payload.name}")
+        print(f"{'='*60}\033[0m\n")
+        print(f"\033[38;5;47m{payload.code}\033[0m")
         input("\n\033[38;5;244mPress Enter to continue...\033[0m")
 
     def _run_shell_handler(self, name: str):
@@ -982,6 +1006,49 @@ class PhantomEngine:
         else:
             self.display_message("No active sessions.", "info")
             input("\n\033[38;5;244mPress Enter to continue...\033[0m")
+
+    def _run_external_tools(self, name: str):
+        """Launch external exploit tools from the Netrunner arsenal"""
+        tools = self.exploit_framework.list_external_tools()
+        print(f"\n\033[38;5;51m━━━ External Exploit Arsenal ━━━\033[0m")
+        for i, tool in enumerate(tools, 1):
+            print(f"  \033[38;5;51m[{i}]\033[0m {tool['name']:<30} \033[38;5;244m- {tool['description']}\033[0m")
+        print(f"  \033[38;5;51m[99]\033[0m Return")
+        choice = self.get_user_input("ARSENAL")
+        if choice == "99" or not choice:
+            return
+        if choice.isdigit():
+            idx = int(choice) - 1
+            if 0 <= idx < len(tools):
+                tool_id = tools[idx]['id']
+                print(f"\n\033[38;5;51m  [1] Install {tools[idx]['name']}")
+                print(f"  [2] Run {tools[idx]['name']}")
+                print(f"  [99] Return\033[0m\n")
+                action = self.get_user_input("ACTION")
+                if action == "1":
+                    self.exploit_framework.install_external_tool(tool_id)
+                elif action == "2":
+                    self.exploit_framework.run_external_tool(tool_id)
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
+
+    def _run_legacy_netrunner(self, name: str):
+        """Access classic Netrunner.py tools and exploits"""
+        try:
+            import importlib.util
+            netrunner_path = str(Path(__file__).parent.parent.parent / 'Netrunner.py')
+            spec = importlib.util.spec_from_file_location("Netrunner", netrunner_path)
+            netrunner_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(netrunner_mod)
+            self.display_message("Launching Classic Netrunner interface...", "quickhack")
+            self.display_message("Type 99 in the Netrunner menu to return to PHANTOM.", "info")
+            netrunner_mod.menu()
+        except FileNotFoundError:
+            self.display_message("Netrunner.py not found - make sure it's in the project root.", "error")
+        except KeyboardInterrupt:
+            self.display_message("Returned from Classic Netrunner.", "info")
+        except Exception as e:
+            self.display_message(f"Legacy Netrunner error: {e}", "error")
+        input("\n\033[38;5;244mPress Enter to continue...\033[0m")
 
     # =========================================================================
     # BLACKHAND_FORENSICS - Digital Forensics (80-84)
