@@ -116,6 +116,12 @@ For more information, visit: https://github.com/MiChaelinzo/CyberPunkNetrunner
         help='Execute specific quickhack directly'
     )
     
+    parser.add_argument(
+        '--legacy',
+        action='store_true',
+        help='Launch the classic Netrunner.py interface with all original tools'
+    )
+    
     return parser.parse_args()
 
 
@@ -172,6 +178,26 @@ def main():
     # Check dependencies
     if not args.quiet:
         check_dependencies()
+    
+    # Legacy mode - launch classic Netrunner.py interface
+    if args.legacy:
+        try:
+            import importlib.util
+            netrunner_path = str(Path(__file__).parent / "Netrunner.py")
+            spec = importlib.util.spec_from_file_location("Netrunner", netrunner_path)
+            netrunner_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(netrunner_mod)
+            netrunner_mod.menu()
+        except KeyboardInterrupt:
+            print("\n\n\033[38;5;226m[⚠ ALERT] Emergency jack-out initiated by user\033[0m")
+            sys.exit(0)
+        except Exception as e:
+            print(f"\n\033[38;5;196m[✗ ICE] Legacy Netrunner error: {e}\033[0m")
+            if '--debug' in sys.argv:
+                import traceback
+                traceback.print_exc()
+            sys.exit(1)
+        return
     
     # Import and run the Cyberdeck engine
     try:
