@@ -468,9 +468,7 @@ class PhantomEngine:
         print(f"\n\033[38;5;51m{'='*60}")
         print(f"◢◤ {title}")
         print(f"{'='*60}\033[0m\n")
-        if isinstance(data, dict):
-            print(json.dumps(data, indent=2, default=str))
-        elif isinstance(data, list):
+        if isinstance(data, (dict, list)):
             print(json.dumps(data, indent=2, default=str))
         else:
             print(data)
@@ -478,7 +476,35 @@ class PhantomEngine:
 
     def _get_target(self, prompt_text: str = "Enter target (IP/hostname/URL)") -> str:
         """Prompt user for a target"""
-        return input(f"\n\033[38;5;51m{prompt_text}: \033[38;5;47m").strip()
+        value = input(f"\n\033[38;5;51m{prompt_text}: \033[38;5;47m").strip()
+        # Strip ANSI reset at the end of user input display
+        print("\033[0m", end="")
+        return value
+
+    def _safe_int(self, value: str, default: int, name: str = "value") -> int:
+        """Safely convert string to int with user-friendly error"""
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            self.display_message(f"Invalid {name} '{value}', using default: {default}", "warning")
+            return default
+
+    @staticmethod
+    def _to_serializable(results: Dict[str, Any]) -> Dict[str, Any]:
+        """Convert scan result objects to serializable dicts"""
+        output = {}
+        for key, val in results.items():
+            output[key] = vars(val) if hasattr(val, '__dict__') else val
+        return output
+
+    def _run_with_error_handling(self, func, *args, **kwargs):
+        """Execute a module function with error handling"""
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            self.display_message(f"Operation failed: {e}", "error")
+            input("\n\033[38;5;244mPress Enter to continue...\033[0m")
+            return None
 
     # =========================================================================
     # BREACH_PROTOCOL - Reconnaissance (01-05)
@@ -490,8 +516,9 @@ class PhantomEngine:
         if not target:
             return
         self.display_message(f"Scanning ports on {target}...", "quickhack")
-        result = self.recon.port_scanner.scan(target)
-        self._print_results(vars(result), f"Port Scan: {target}")
+        result = self._run_with_error_handling(self.recon.port_scanner.scan, target)
+        if result:
+            self._print_results(vars(result), f"Port Scan: {target}")
 
     def _run_web_scan(self, name: str):
         """Web security scanning via WebSecurityScanner"""
@@ -499,11 +526,9 @@ class PhantomEngine:
         if not target:
             return
         self.display_message(f"Running web security scan on {target}...", "quickhack")
-        results = self.web_scanner.full_scan(target)
-        output = {}
-        for key, val in results.items():
-            output[key] = vars(val) if hasattr(val, '__dict__') else val
-        self._print_results(output, f"Web Security Scan: {target}")
+        results = self._run_with_error_handling(self.web_scanner.full_scan, target)
+        if results:
+            self._print_results(self._to_serializable(results), f"Web Security Scan: {target}")
 
     def _run_osint_gather(self, name: str):
         """OSINT gathering via ReconnaissanceModule"""
@@ -569,11 +594,9 @@ class PhantomEngine:
         if not target:
             return
         self.display_message(f"Full web scan on {target}...", "quickhack")
-        results = self.web_scanner.full_scan(target)
-        output = {}
-        for key, val in results.items():
-            output[key] = vars(val) if hasattr(val, '__dict__') else val
-        self._print_results(output, f"Full Web Scan: {target}")
+        results = self._run_with_error_handling(self.web_scanner.full_scan, target)
+        if results:
+            self._print_results(self._to_serializable(results), f"Full Web Scan: {target}")
 
     def _run_vuln_scan(self, name: str):
         """Vulnerability scanner via ExploitFramework"""
@@ -649,7 +672,8 @@ class PhantomEngine:
             port_str = self._get_target("Enter proxy port")
             ptype = self._get_target("Enter type (socks4/socks5/http)") or "socks5"
             if host and port_str:
-                self.stealth.proxy_chain.add_proxy(host, int(port_str), ptype)
+                port = self._safe_int(port_str, 1080, "port")
+                self.stealth.proxy_chain.add_proxy(host, port, ptype)
                 self.display_message("Proxy added to chain", "success")
         elif choice == "2":
             proxies = [vars(p) for p in self.stealth.proxy_chain.proxies]
@@ -763,8 +787,7 @@ class PhantomEngine:
             return
         self.display_message(f"Quick recon on {target}...", "quickhack")
         results = self.recon.quick_scan(target)
-        output = {k: vars(v) for k, v in results.items()}
-        self._print_results(output, f"Quick Recon: {target}")
+        self._print_results(self._to_serializable(results), f"Quick Recon: {target}")
 
     def _run_full_recon(self, name: str):
         """Full reconnaissance scan"""
@@ -773,8 +796,7 @@ class PhantomEngine:
             return
         self.display_message(f"Full reconnaissance on {target}...", "quickhack")
         results = self.recon.full_scan(target)
-        output = {k: vars(v) for k, v in results.items()}
-        self._print_results(output, f"Full Recon: {target}")
+        self._print_results(self._to_serializable(results), f"Full Recon: {target}")
 
     # =========================================================================
     # ULTIMATE_QUICKHACKS - Cloud Security (50-54)
@@ -814,8 +836,7 @@ class PhantomEngine:
             return
         self.display_message(f"Full cloud scan for {company}...", "quickhack")
         results = self.cloud_scanner.full_cloud_scan(company)
-        output = {k: vars(v) for k, v in results.items()}
-        self._print_results(output, f"Full Cloud Scan: {company}")
+        self._print_results(self._to_serializable(results), f"Full Cloud Scan: {company}")
 
     def _run_container_scan(self, name: str):
         """Container/Kubernetes scanning"""
@@ -849,14 +870,17 @@ class PhantomEngine:
             print(f"  \033[38;5;51m[{i}]\033[0m {t}")
         choice = self._get_target("Select template number")
         port_str = self._get_target("Enter port (default 8080)") or "8080"
+        port = self._safe_int(port_str, 8080, "port")
         if choice and choice.isdigit() and 1 <= int(choice) <= len(templates):
             template = templates[int(choice) - 1]
-            self.display_message(f"Starting phishing server with '{template}' on port {port_str}...", "quickhack")
+            self.display_message(f"Starting phishing server with '{template}' on port {port}...", "quickhack")
             self.display_message("Press Ctrl+C to stop the server.", "warning")
             try:
-                self.social.start_phishing(template, int(port_str))
+                self.social.start_phishing(template, port)
             except KeyboardInterrupt:
                 self.display_message("Phishing server stopped.", "info")
+            except Exception as e:
+                self.display_message(f"Phishing server error: {e}", "error")
         input("\n\033[38;5;244mPress Enter to continue...\033[0m")
 
     def _run_phishing_templates(self, name: str):
@@ -918,11 +942,12 @@ class PhantomEngine:
         choice = self._get_target("Select shell type number")
         host = self._get_target("Enter LHOST (your IP)")
         port_str = self._get_target("Enter LPORT") or "4444"
+        port = self._safe_int(port_str, 4444, "port")
         if choice and choice.isdigit() and host:
             idx = int(choice) - 1
             if 0 <= idx < len(all_shells):
                 shell_type = all_shells[idx]
-                payload = self.exploit_framework.generate_payload(shell_type, host, int(port_str))
+                payload = self.exploit_framework.generate_payload(shell_type, host, port)
                 print(f"\n\033[38;5;51m{'='*60}")
                 print(f"◢◤ Generated Payload: {payload.name}")
                 print(f"{'='*60}\033[0m\n")
@@ -933,12 +958,15 @@ class PhantomEngine:
         """Start reverse shell listener"""
         host = self._get_target("Enter LHOST to listen on (default 0.0.0.0)") or "0.0.0.0"
         port_str = self._get_target("Enter LPORT (default 4444)") or "4444"
-        self.display_message(f"Starting listener on {host}:{port_str}...", "quickhack")
+        port = self._safe_int(port_str, 4444, "port")
+        self.display_message(f"Starting listener on {host}:{port}...", "quickhack")
         self.display_message("Waiting for connection... Press Ctrl+C to cancel.", "warning")
         try:
-            self.exploit_framework.start_handler(host, int(port_str))
+            self.exploit_framework.start_handler(host, port)
         except KeyboardInterrupt:
             self.display_message("Listener stopped.", "info")
+        except Exception as e:
+            self.display_message(f"Listener error: {e}", "error")
         input("\n\033[38;5;244mPress Enter to continue...\033[0m")
 
     def _run_list_payloads(self, name: str):
@@ -1023,12 +1051,17 @@ class PhantomEngine:
         if method == "1":
             wordlist = self._get_target("Enter wordlist path (default /usr/share/wordlists/rockyou.txt)")
             wordlist = wordlist or "/usr/share/wordlists/rockyou.txt"
+            if not os.path.exists(wordlist):
+                self.display_message(f"Wordlist not found: {wordlist}", "error")
+                input("\n\033[38;5;244mPress Enter to continue...\033[0m")
+                return
             self.display_message("Running dictionary attack...", "quickhack")
             result = self.crypto.crack_hash(hash_val, method="dictionary", wordlist=wordlist)
         elif method == "2":
-            max_len = self._get_target("Max password length (default 6)") or "6"
+            max_len_str = self._get_target("Max password length (default 6)") or "6"
+            max_len = self._safe_int(max_len_str, 6, "max length")
             self.display_message("Running brute force attack...", "quickhack")
-            result = self.crypto.crack_hash(hash_val, method="bruteforce", max_len=int(max_len))
+            result = self.crypto.crack_hash(hash_val, method="bruteforce", max_len=max_len)
         else:
             return
         if result:
@@ -1059,9 +1092,11 @@ class PhantomEngine:
                 self.display_message(f"Decoded: {result}", "success")
         elif choice == "3":
             data = self._get_target("Enter text")
-            shift = self._get_target("Enter shift value") or "3"
-            result = self.crypto.encoder.caesar_cipher(data, int(shift))
-            self.display_message(f"Result: {result}", "success")
+            shift_str = self._get_target("Enter shift value") or "3"
+            shift = self._safe_int(shift_str, 3, "shift")
+            if data:
+                result = self.crypto.encoder.caesar_cipher(data, shift)
+                self.display_message(f"Result: {result}", "success")
         elif choice == "4":
             data = self._get_target("Enter text")
             key = self._get_target("Enter XOR key")
@@ -1083,15 +1118,17 @@ class PhantomEngine:
         print("  [3] Generate random bytes (hex)\033[0m\n")
         choice = self.get_user_input("KEYGEN")
         if choice == "1":
-            length = self._get_target("Password length (default 16)") or "16"
-            password = self.crypto.generate_password(int(length))
+            length_str = self._get_target("Password length (default 16)") or "16"
+            length = self._safe_int(length_str, 16, "length")
+            password = self.crypto.generate_password(length)
             self.display_message(f"Generated password: {password}", "success")
         elif choice == "2":
             uuid = self.crypto.key_generator.generate_uuid()
             self.display_message(f"UUID: {uuid}", "success")
         elif choice == "3":
-            length = self._get_target("Byte length (default 32)") or "32"
-            rand_bytes = self.crypto.key_generator.generate_random_bytes(int(length))
+            length_str = self._get_target("Byte length (default 32)") or "32"
+            length = self._safe_int(length_str, 32, "length")
+            rand_bytes = self.crypto.key_generator.generate_random_bytes(length)
             self.display_message(f"Random bytes: {rand_bytes.hex()}", "success")
         input("\n\033[38;5;244mPress Enter to continue...\033[0m")
 
