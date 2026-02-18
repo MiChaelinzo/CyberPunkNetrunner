@@ -1035,7 +1035,7 @@ class PhantomEngine:
         """Access classic Netrunner.py tools and exploits"""
         try:
             import importlib.util
-            netrunner_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'Netrunner.py')
+            netrunner_path = str(Path(__file__).parent.parent.parent / 'Netrunner.py')
             spec = importlib.util.spec_from_file_location("Netrunner", netrunner_path)
             netrunner_mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(netrunner_mod)
